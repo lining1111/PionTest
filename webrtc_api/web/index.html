@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebRTC</title>
+</head>
+<body>
+
+<div id="id_getMediaDevicesInfo">
+    <button onclick="getMediaDevicesInfo()">获取多媒体信息</button>
+</div>
+<br>
+<div id="id_getCameraMedia">
+    <button onclick="getCameraMedia()">开启本地摄像头</button>
+    <br>
+    <video id="localCameraVideo" width="160" height="120" autoplay muted></video>
+
+</div>
+<br>
+<div id="id_getScreenMedia">
+    <button onclick="getScreenMedia()">开启本地屏幕</button>
+    <br>
+    <video id="localScreenVideo" width="720" height="480" autoplay muted></video>
+</div>
+<br>
+<div id="id_pc">
+    <button onclick="RTPPC_Op()">操作TCPPC</button>
+
+</div>
+
+<h3> Remote Video </h3>
+<div id="remoteVideos"></div> <br />
+
+<script src="demo.js"></script>
+</body>
+
+<style>
+
+</style>
+</html>
