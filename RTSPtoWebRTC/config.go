@@ -22,7 +22,7 @@ var Config = loadConfig()
 type ConfigST struct {
 	mutex     sync.RWMutex
 	Server    ServerST            `json:"server"`
-	Streams   map[string]StreamST `json:"streams"`
+	Streams   map[string]StreamST `json:"streams"` //以suuid为键名的配置+webrtc相关的类
 	LastError error
 }
 
@@ -38,13 +38,13 @@ type ServerST struct {
 
 // StreamST struct
 type StreamST struct {
-	URL          string `json:"url"`
-	Status       bool   `json:"status"`
-	OnDemand     bool   `json:"on_demand"`
-	DisableAudio bool   `json:"disable_audio"`
-	Debug        bool   `json:"debug"`
-	RunLock      bool   `json:"-"`
-	Codecs       []av.CodecData
+	URL          string         `json:"url"`
+	Status       bool           `json:"status"`
+	OnDemand     bool           `json:"on_demand"`
+	DisableAudio bool           `json:"disable_audio"`
+	Debug        bool           `json:"debug"`
+	RunLock      bool           `json:"-"`
+	Codecs       []av.CodecData //解码器相关
 	Cl           map[string]viewer
 }
 
@@ -162,6 +162,7 @@ func (element *ConfigST) ext(suuid string) bool {
 	return ok
 }
 
+// 添加解码器数组
 func (element *ConfigST) coAd(suuid string, codecs []av.CodecData) {
 	element.mutex.Lock()
 	defer element.mutex.Unlock()
@@ -170,6 +171,7 @@ func (element *ConfigST) coAd(suuid string, codecs []av.CodecData) {
 	element.Streams[suuid] = t
 }
 
+// 获取解码器数组
 func (element *ConfigST) coGe(suuid string) []av.CodecData {
 	for i := 0; i < 100; i++ {
 		element.mutex.RLock()

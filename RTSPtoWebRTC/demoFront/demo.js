@@ -12,6 +12,8 @@ let log = msg => {
 }
 
 async function handleNegotiationNeededEvent() {
+    //对端添加了媒体轨道，比如AddTrack
+    console.log('handleNegotiationNeededEvent')
     let offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
     getRemoteSdp();
@@ -24,6 +26,7 @@ function StartVideo() {
 
     pc.onnegotiationneeded = handleNegotiationNeededEvent;
     pc.ontrack = function (event) {
+        console.log('track kind',event.track.kind)
         let stream = new MediaStream();
         stream.addTrack(event.track);
 
@@ -44,6 +47,7 @@ function getCodecInfo() {
         } catch (e) {
             console.log(e);
         } finally {
+            console.log('codec:',data)
             $.each(data, function (index, value) {
                 pc.addTransceiver(value.Type, {
                     'direction': 'sendrecv'

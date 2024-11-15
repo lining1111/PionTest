@@ -81,6 +81,7 @@ func HTTPAPIServerStreamCodec(c *gin.Context) {
 				log.Println("Codec Not Supported WebRTC ignore this track", codec.Type())
 				continue
 			}
+			log.Println("Codec supported:", codec.Type().String())
 			if codec.Type().IsVideo() {
 				tmpCodec = append(tmpCodec, JCodec{Type: "video"})
 			} else {

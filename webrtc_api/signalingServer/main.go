@@ -228,7 +228,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 	// When this frame returns close the PeerConnection
 	defer peerConnection.Close() //nolint
 
-	// Accept one audio and one video track incoming
+	// Accept one audio and one video track incoming 添加只接收的
 	for _, typ := range []webrtc.RTPCodecType{webrtc.RTPCodecTypeVideo, webrtc.RTPCodecTypeAudio} {
 		if _, err := peerConnection.AddTransceiverFromKind(typ, webrtc.RTPTransceiverInit{
 			Direction: webrtc.RTPTransceiverDirectionRecvonly,

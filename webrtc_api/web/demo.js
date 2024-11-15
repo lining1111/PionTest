@@ -107,9 +107,11 @@ async function RTPPC_Op() {
         navigator.mediaDevices.getUserMedia({video: true}).then(function (stream) {
             document.getElementById('localCameraVideo').srcObject = stream
             pc = new RTCPeerConnection();
+
             signaler = new SignalingChannel();
             stream.getVideoTracks().forEach(track => {
                 pc.addTrack(track, stream);
+                console.log('pc getTransceivers',pc.getTransceivers())
             })
             handlerPC(pc)
             handlerSingaler(signaler)
@@ -117,6 +119,52 @@ async function RTPPC_Op() {
             console.log(err.message)
         })
 
+    }
+}
+
+function handlerPC(pc) {
+    pc.ontrack = function (event) {
+        console.log('track get')
+        console.log('pc getTransceivers',pc.getTransceivers())
+        if (event.track.kind === 'audio') {
+            return
+        }
+
+        //将远程多媒体数据添加到web界面
+        addRemoteVideo(event)
+
+    }
+
+    pc.onicecandidate = ev => {
+        //将候选者信息通过信令服务器发送到对端
+        if (ev.candidate) {
+            console.log('send candidate to signaler', ev.candidate)
+            var msg = {
+                event: 'candidate',
+                data: JSON.stringify(ev.candidate)
+            }
+            signaler.send(JSON.stringify(msg))
+        }
+
+    }
+}
+
+
+function addRemoteVideo(event) {
+    let el = document.createElement(event.track.kind)
+    el.srcObject = event.streams[0]
+    el.autoplay = true
+    el.controls = true
+    document.getElementById('remoteVideos').appendChild(el)
+    console.log('add remoteVideo')
+    event.track.onmute = function (event) {
+        el.play()
+    }
+
+    event.streams[0].onremovetrack = ({track}) => {
+        if (el.parentNode) {
+            el.parentNode.removeChild(el)
+        }
     }
 }
 
@@ -163,50 +211,5 @@ function handlerSingaler(signaler) {
     }
     signaler.onerror = ev => {
         console.log("ERROR: " + evt.data)
-    }
-}
-
-function handlerPC(pc) {
-    pc.ontrack = function (event) {
-        console.log('track get')
-        if (event.track.kind === 'audio') {
-            return
-        }
-
-        //将远程多媒体数据添加到web界面
-        addRemoteVideo(event)
-
-    }
-
-    pc.onicecandidate = ev => {
-        //将候选者信息通过信令服务器发送到对端
-        if (ev.candidate) {
-            console.log('send candidate to signaler', ev.candidate)
-            var msg = {
-                event: 'candidate',
-                data: JSON.stringify(ev.candidate)
-            }
-            signaler.send(JSON.stringify(msg))
-        }
-
-    }
-}
-
-
-function addRemoteVideo(event) {
-    let el = document.createElement(event.track.kind)
-    el.srcObject = event.streams[0]
-    el.autoplay = true
-    el.controls = true
-    document.getElementById('remoteVideos').appendChild(el)
-    console.log('add remoteVideo')
-    event.track.onmute = function (event) {
-        el.play()
-    }
-
-    event.streams[0].onremovetrack = ({track}) => {
-        if (el.parentNode) {
-            el.parentNode.removeChild(el)
-        }
     }
 }
