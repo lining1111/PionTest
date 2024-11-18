@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button, } from "antd";
 import {reactive, ref} from "vue";
 
 let stream;
@@ -142,42 +141,34 @@ let handleDataAvailable = (event) => {
     <h3>
       录制视频示例
     </h3>
-    {/* 视频预览 muted表示默认静音 */}
-    <video className="small-video" ref="videoPreview" playsInline autoPlay muted></video>
-    {/* 视频回放 loop表示循环播放 */}
-    <video className="small-video" ref="videoPlayer" playsInline loop></video>
-
+    <video class="small-video" ref="videoPreview" playsInline autoPlay muted></video>
+    <video class="small-video" ref="videoPlayer" playsInline loop></video>
     <div>
-      <Button
-          className="button"
-          onClick={this.startClickHandler}
-          disabled={this.state.status != 'start'}>
+      <el-button
+          :disabled="state.status != 'start'"
+          @click=startClickHandler>
         打开摄像头
-      </Button>
-      <Button
-          className="button"
-          disabled={this.state.status != 'startRecord'}
-          onClick={this.startRecordButtonClickHandler}>
+      </el-button>
+      <el-button
+          :disabled="state.status != 'startRecord'"
+          @click=startRecordButtonClickHandler>
         开始录制
-      </Button>
-      <Button
-          className="button"
-          disabled={this.state.status != 'stopRecord'}
-          onClick={this.stopRecordButtonClickHandler}>
+      </el-button>
+      <el-button
+          :disabled="state.status != 'stopRecord'"
+          @click=stopRecordButtonClickHandler>
         停止录制
-      </Button>
-      <Button
-          className="button"
-          disabled={this.state.status != 'play'}
-          onClick={this.playButtonClickHandler}>
+      </el-button>
+      <el-button
+          :disabled="state.status != 'play'"
+          @click=playButtonClickHandler>
         播放
-      </Button>
-      <Button
-          className="button"
-          disabled={this.state.status != 'download'}
-          onClick={this.downloadButtonClickHandler}>
+      </el-button>
+      <el-button
+          :disabled="state.status != 'download'"
+          @click=downloadButtonClickHandler>
         下载
-      </Button>
+      </el-button>
     </div>
   </div>
 </template>

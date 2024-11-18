@@ -55,8 +55,8 @@ function handleError(error:any) {
       共享屏幕示例
     </h3>
 <!--    捕获屏幕数据渲染 -->
-    <video className="video" ref="myVideo" autoPlay playsInline></video>
-    <button @click=startScreenShare>开始共享</button>
+    <video  ref="myVideo" autoPlay playsInline></video>
+    <el-button @click=startScreenShare>开始共享</el-button>
   </div>
 </template>
 

@@ -4,7 +4,7 @@ import {RouterLink} from "vue-router";
 </script>
 
 <template>
-  <div class="container-fluid myNav">
+  <div class="container-fluid">
     <div class="row">
       <router-link active-class="active" class="list-group-item" to="/camera">摄像头实例</router-link>
       <router-link active-class="active" class="list-group-item" to="/microphone">麦克风示例</router-link>
@@ -41,18 +41,5 @@ import {RouterLink} from "vue-router";
 </template>
 
 <style scoped>
-.myNav {
-  float: left;
-  width: 30%;
-  border: solid purple 10px;
-}
 
-.myNav .small {
-  font-size: 15px;
-}
-
-.myNav .list-group-item {
-  float: none;
-  min-width: 230px;
-}
 </style>

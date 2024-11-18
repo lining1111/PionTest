@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from "antd";
 import {onMounted, ref} from "vue";
 
 //本地视频
@@ -276,9 +275,9 @@ let hangup = () => {
     {/* 远端视频 */}
     <video ref="remoteVideo" playsInline autoPlay></video>
     <div>
-      <Button ref="startButton" onClick={this.start} style='{marginRight:"10px"}'>开始</Button>
-      <Button ref="callButton" onClick={this.call} style='{marginRight:"10px"}'>呼叫</Button>
-      <Button ref="hangupButton" onClick={this.hangup} style='{marginRight:"10px"}'>挂断</Button>
+      <el-button ref="startButton" @click=start :style='{marginRight:"10px"}'>开始</el-button>
+      <el-button ref="callButton" @click=call :style='{marginRight:"10px"}'>呼叫</el-button>
+      <el-button ref="hangupButton" @click=hangup :style='{marginRight:"10px"}'>挂断</el-button>
     </div>
   </div>
 </template>

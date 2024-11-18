@@ -1,9 +1,8 @@
 <script setup lang="js">
+
 import {onMounted, ref} from "vue";
 
 import SoundMeter from '@/utils/soundmeter';
-
-// 'use strict';
 
 let state = ref({
   audioLevel:0,
@@ -46,6 +45,7 @@ let soundMeterProcess = () => {
   var val = (soundMeter.instant.toFixed(2) * 348) + 1;
   //设置音量值状态
   state.value.audioLevel = val;
+  // console.log('val',val)
   //每隔100毫秒调用一次soundMeterProcess函数,模拟实时检测音频音量
   setTimeout(soundMeterProcess, 100);
 }
@@ -62,7 +62,6 @@ function handleError(error) {
     <h3>
       音量检测示例
     </h3>
-    {/* 这是使用了一个div来作为音量条的展示,高度固定,宽度根据音量值来动态变化 */}
     <div :style="{
         width: state.audioLevel + 'px',
         height: '10px',

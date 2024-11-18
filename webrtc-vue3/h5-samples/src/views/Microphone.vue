@@ -1,5 +1,6 @@
-<script setup lang="ts">
+<script setup lang="ts" name="Microphone">
 import {onMounted, ref} from "vue";
+import {ElMessage} from "element-plus";
 
 const constraints: MediaStreamConstraints = {
   //启用音频
@@ -29,7 +30,7 @@ function handleSuccess(stream: MediaStream) {
 }
 
 function handleError(err:any) {
-  console.log('navigator.MediaDevices.getUserMedia error: ', err.message, err.name);
+  ElMessage.error('navigator.MediaDevices.getUserMedia error: ', err.message);
 }
 
 </script>
@@ -39,7 +40,6 @@ function handleError(err:any) {
   <h3>
     麦克风示例
   </h3>
-  {/* 音频对象,可播放声音 */}
   <audio ref="audio" controls autoPlay></audio>
   <p>警告: 如何没有使用头戴式耳机, 声音会反馈到扬声器.</p>
 </div>

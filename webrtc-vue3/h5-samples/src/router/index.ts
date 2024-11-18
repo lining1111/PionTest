@@ -11,16 +11,16 @@ import MediaSettings from "@/views/MediaSettings.vue";
 import RecordAudio from "@/views/RecordAudio.vue";
 import RecordScreen from "@/views/RecordScreen.vue";
 import RecordCanvas from "@/views/RecordCanvas.vue";
+import RecordVideo from "@/views/RecordVideo.vue";
 import MediaStreamAPI from "@/views/MediaStreamAPI.vue";
 import CaptureVideo from "@/views/CaptureVideo.vue";
 import CaptureCanvas from "@/views/CaptureCanvas.vue";
-import RecordVideo from "@/views/RecordVideo.vue";
 import PeerConnection from "@/views/PeerConnection.vue";
 import PeerConnectionVideo from "@/views/PeerConnectionVideo.vue";
 import PeerConnectionCanvas from "@/views/PeerConnectionCanvas.vue";
 import DataChannel from "@/views/DataChannel.vue";
 import DataChannelFile from "@/views/DataChannelFile.vue";
-import P2PClient from "@/views/P2PClient.vue";
+// import P2PClient from "@/views/P2PClient.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -86,6 +86,11 @@ const router = createRouter({
             component: RecordCanvas,
         },
         {
+            path: '/recordVideo',
+            name: 'recordVideo',
+            component: RecordVideo,
+        },
+        {
             path: '/mediaStreamAPI',
             name: 'mediaStreamAPI',
             component: MediaStreamAPI,
@@ -99,11 +104,6 @@ const router = createRouter({
             path: '/captureCanvas',
             name: 'captureCanvas',
             component: CaptureCanvas,
-        },
-        {
-            path: '/recordVideo',
-            name: 'recordVideo',
-            component: RecordVideo,
         },
         {
             path: '/peerConnection',
@@ -130,11 +130,11 @@ const router = createRouter({
             name: 'dataChannelFile',
             component: DataChannelFile,
         },
-        {
-            path: '/p2pClient',
-            name: 'p2pClient',
-            component: P2PClient,
-        },
+        // {
+        //     path: '/p2pClient',
+        //     name: 'p2pClient',
+        //     component: P2PClient,
+        // },
     ],
 })
 

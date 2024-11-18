@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from "antd";
 import {onMounted, ref} from "vue";
 
 //本地视频
@@ -245,15 +244,13 @@ let hangup = () => {
     <h3>
       Video发送至远端示例
     </h3>
-    <video ref="localVideo" playsInline controls loop muted onCanPlay={this.canPlay}>
-      {/* mp4视频路径 */}
+    <video ref="localVideo" playsInline controls loop muted @canplay=canPlay>
       <source src="./assets/webrtc.mp4" type="video/mp4" />
     </video>
-    {/* 远端视频 */}
     <video ref="remoteVideo" playsInline autoPlay></video>
     <div>
-      <Button ref="callButton" onClick={this.call} style='{marginRight:"10px"}'>呼叫</Button>
-      <Button ref="hangupButton" onClick={this.hangup} style='{marginRight:"10px"}'>挂断</Button>
+      <el-button ref="callButton" @click=call :style='{marginRight:"10px"}'>呼叫</el-button>
+      <el-button ref="hangupButton" @click=hangup :style='{marginRight:"10px"}'>挂断</el-button>
     </div>
   </div>
 </template>

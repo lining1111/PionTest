@@ -34,8 +34,7 @@ let canPlay = () => {
     <h3>
       捕获Video作为媒体流示例
     </h3>
-    {/* 源视频 显示控制按钮 循环播放 */}
-    <video ref="sourceVideo" playsInline controls loop muted onCanPlay={this.canPlay}>
+    <video ref="sourceVideo" playsInline controls loop muted @canplay=canPlay>
       {/* mp4视频路径 */}
       <source src="./assets/webrtc.mp4" type="video/mp4" />
     </video>

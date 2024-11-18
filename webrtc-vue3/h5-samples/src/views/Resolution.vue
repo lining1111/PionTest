@@ -1,4 +1,4 @@
-<script setup lang="ts" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<script setup lang="ts">
 //QVGA 320*240
 import {ref} from "vue";
 
@@ -38,13 +38,14 @@ const eightKConstraints = {
 
 let selected = ref('')
 let video = ref()
-let stream = <MediaStream>{}
+let stream;
 let constraints = <MediaTrackConstraints>{}
 
 //根据约束获取视频
 let getMedia = (constraints: MediaStreamConstraints) => {
   //判断流对象是否为空
   if (stream) {
+    console.log(stream)
     //迭代并停止所有轨道
     stream.getTracks().forEach(track => {
       track.stop();
@@ -110,10 +111,10 @@ let handleChange = () => {
 //动态改变分辨率
 let dynamicChange = (e:any) => {
   //获取当前的视频流中的视频轨道
-  const track = stream.getVideoTracks()[0];
+  const track = stream?.getVideoTracks()[0];
   //使用超清约束作为测试条件
   console.log('应用高清效果:' + JSON.stringify(hdConstraints));
-  track.applyConstraints(constraints)
+  track?.applyConstraints(constraints)
       .then(() => {
         console.log('动态改变分辨率成功...');
       })
@@ -141,7 +142,7 @@ let dynamicChange = (e:any) => {
     <option value="4k">4K</option>
     <option value="8k">8K</option>
     </select>
-    <button @click=dynamicChange :style="{ marginLeft:'20px' }">动态设置</button>
+    <el-button @click=dynamicChange :style="{ marginLeft:'20px' }">动态设置</el-button>
   </div>
 </template>
 

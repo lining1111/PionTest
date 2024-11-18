@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from "antd";
 import {onMounted, ref} from "vue";
 
 //本地连接对象
@@ -370,9 +369,9 @@ let cancleSendFile = () => {
 
     <a ref="download"></a>
     <div>
-      <Button onClick=startSendFile style='{ marginRight: "10px" }'>发送</Button>
-      <Button onClick=cancleSendFile style='{ marginRight: "10px" }'>取消</Button>
-      <Button onClick=closeChannel style='{ marginRight: "10px" }'>关闭</Button>
+      <el-button @click=startSendFile style='{ marginRight: "10px" }'>发送</el-button>
+      <el-button @click=cancleSendFile style='{ marginRight: "10px" }'>取消</el-button>
+      <el-button @click=closeChannel style='{ marginRight: "10px" }'>关闭</el-button>
     </div>
   </div>
 </template>

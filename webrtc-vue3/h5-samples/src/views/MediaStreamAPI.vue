@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { Button } from "antd";
 import {onMounted, ref} from "vue";
 
 //MediaStream对象
 let stream;
-onMounted(()=>{
+onMounted(() => {
   openDevice()
 })
 
@@ -72,12 +71,12 @@ let btnRemoveVideoTrack = () => {
       MediaStreamAPI测试示例
     </h3>
     <video className="video" ref="myVideo" autoPlay playsInline></video>
-    <Button onClick={this.btnGetTracks} style="{width:120px}">获取所有轨道</Button>
-    <Button onClick={this.btnGetAudioTracks} style="{width:120px}">获取音频轨道</Button>
-    <Button onClick={this.btnGetTrackById} style="{width:200px}">根据Id获取音频轨道</Button>
-    <Button onClick={this.btnRemoveAudioTrack} style="{width:120px}">删除音频轨道</Button>
-    <Button onClick={this.btnGetVideoTracks} style="{width:120px}">获取视频轨道</Button>
-    <Button onClick={this.btnRemoveVideoTrack} style="{width:120px}">删除视频轨道</Button>
+    <el-button @click=btnGetTracks :style="{width:120}">获取所有轨道</el-button>
+    <el-button @click=btnGetAudioTracks :style="{width:120}">获取音频轨道</el-button>
+    <el-button @click=btnGetTrackById :style="{width:200}">根据Id获取音频轨道</el-button>
+    <el-button @click=btnRemoveAudioTrack :style="{width:120}">删除音频轨道</el-button>
+    <el-button @click=btnGetVideoTracks :style="{width:120}">获取视频轨道</el-button>
+    <el-button @click=btnRemoveVideoTrack :style="{width:120}">删除视频轨道</el-button>
   </div>
 </template>
 

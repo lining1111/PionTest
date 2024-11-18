@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from "antd";
 import {onMounted, ref} from "vue";
 
 //录制对象
@@ -8,12 +7,13 @@ let mediaRecorder;
 let recordedBlobs;
 //捕获数据流
 let stream;
+const video = ref();
 //画布对象
 let canvas = ref();
 //画布2D内容
 let context;
 
-onMounted(()=>{
+onMounted(() => {
   drawLine()
 })
 
@@ -25,7 +25,7 @@ let drawLine = () => {
   //填充颜色
   context.fillStyle = '#CCC';
   //绘制Canvas背景
-  context.fillRect(0,0,320,240);
+  context.fillRect(0, 0, 320, 240);
 
   context.lineWidth = 1;
   //画笔颜色
@@ -66,7 +66,7 @@ let endAction = () => {
 //开始捕获Canvas
 let startCaptureCanvas = async (e) => {
   stream = canvas.value.captureStream(10);
-  const video = ref();
+
   //获取视频轨道
   const videoTracks = stream.getVideoTracks();
   //读取视频资源名称
@@ -84,7 +84,7 @@ let startRecord = (e) => {
   recordedBlobs = [];
   try {
     //创建MediaRecorder对象,准备录制
-    mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+    mediaRecorder = new MediaRecorder(stream, {mimeType: 'video/webm'});
   } catch (e) {
     console.error('创建MediaRecorder错误:', e);
     return;
@@ -119,7 +119,7 @@ let stopRecord = (e) => {
   stream = null;
 
   //生成blob文件,类型为video/webm
-  const blob = new Blob(recordedBlobs, { type: 'video/webm' });
+  const blob = new Blob(recordedBlobs, {type: 'video/webm'});
   //创建一个下载链接
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -144,6 +144,14 @@ let stopRecord = (e) => {
     <h3>
       录制Canvas示例
     </h3>
+    <div>
+      <div class="small-canvas">
+        <canvas ref='canvas'></canvas>
+      </div>
+      <video class="small-video" ref='video' playsInline autoPlay></video>
+    </div>
+    <el-button @click="startCaptureCanvas">开始</el-button>
+    <el-button @click="stopRecord">停止</el-button>
   </div>
 </template>
 

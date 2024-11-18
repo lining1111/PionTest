@@ -1,6 +1,8 @@
-<script setup lang="ts">
+<script setup lang="ts" name="Camera">
 //约束条件
-import {ref} from "vue";
+import { ref} from "vue";
+import {ElMessage, ElMessageBox} from "element-plus";
+
 
 const constraints: MediaStreamConstraints = {
   //禁用音频
@@ -31,15 +33,15 @@ let handleSuccess = (stream: MediaStream) => {
   myVideo.value.srcObject = stream;
 }
 
-function handleError(error: any) {
+let handleError = (error: any) => {
   if (error.name === 'ConstraintNotSatisfiedError') {
     const v = constraints.video;
     //宽高尺寸错误
-    alert(`宽:${(v as MediaTrackConstraints).width} 高:${(v as MediaTrackConstraints).height} 设备不支持`);
+    ElMessage.error(`宽:${(v as MediaTrackConstraints).width} 高:${(v as MediaTrackConstraints).height} 设备不支持`);
   } else if (error.name === 'PermissionDeniedError') {
-    alert('没有摄像头和麦克风使用权限,请点击允许按钮');
+    ElMessageBox.alert('没有摄像头和麦克风使用权限,请点击允许按钮')
   }
-  alert(`getUserMedia错误: ${error.name}`);
+  ElMessage.error(`getUserMedia错误: ${error.name}`);
 }
 
 </script>
@@ -50,8 +52,8 @@ function handleError(error: any) {
       摄像头示例
     </h3>
     <hr>
-    <button @click="openCamera" style="float:left">打开摄像头</button>
     <video type="video" ref="myVideo" autoplay playsinline></video>
+    <el-button @click="openCamera" style="float:left">打开摄像头</el-button>
   </div>
 
 </template>

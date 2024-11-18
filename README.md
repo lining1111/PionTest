@@ -209,8 +209,17 @@ sfu代码实现逻辑![sfu代码实现逻辑](images/webrtc-sfu-logic.webp)
     视频地址为 https://www.bilibili.com/video/BV1q54y1X7aY/?spm_id_from=333.999.0.0&vd_source=d5fa5216fd2846a4da58ccfad53b6049
             从这个视频开始，可以跟着亢神学习webrtc的基础理论，知道webrtc是怎么作的，才能从理论上指导我们，看各种代码写的webrtc，比如js、go、c++、java等。
             如果不是为了精通webrtc，只是为了使用，不建议用c++,因为高级语言的实现比较容易且能最快出效果。
-
-    代码地址为 https://github.com/kangshaojun/webrtc-book h5-samples单元。 代码用的是webpack+react,需要改为vite+vue3
     学习的视频是 https://space.bilibili.com/394612055/channel/seriesdetail?sid=1193215&ctype=0
-
     以golang来学习webrtc的话，可以学习亢少军参与的 github.com/pion/ion的项目，技术框架为go+flutter
+
+    代码地址为 https://github.com/kangshaojun/webrtc-book h5-samples单元。
+    代码技术架构改动：
+    原           现
+    react       vue
+    antd        element-plus
+    
+
+
+    
+
+    

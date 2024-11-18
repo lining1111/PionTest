@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { Button } from "antd";
 import {onMounted, ref} from "vue";
 
 //画布对象
-let canvas;
+let canvas = ref();
 //画布2D内容
 let context;
 //远端视频
@@ -21,14 +20,14 @@ onMounted((e)=>{
 
 //开始捕获Canvas
 let startCaptureCanvas = async (e) => {
-  localStream = canvas.captureStream(10);
+  localStream = canvas.value.captureStream(10);
   drawLine();
 }
 
 //画线
 let drawLine = () => {
   //获取Canvas的2d内容
-  context = canvas.getContext("2d");
+  context = canvas.value.getContext("2d");
   //填充颜色
   context.fillStyle = '#CCC';
   //绘制Canvas背景
@@ -39,9 +38,9 @@ let drawLine = () => {
   context.strokeStyle = "#FF0000";
 
   //监听画板鼠标按下事件 开始绘画
-  canvas.addEventListener("mousedown", this.startAction);
+  canvas.value.addEventListener("mousedown", startAction);
   //监听画板鼠标抬起事件 结束绘画
-  canvas.addEventListener("mouseup", this.endAction);
+  canvas.value.addEventListener("mouseup", endAction);
 }
 
 //鼠标按下事件
@@ -53,7 +52,7 @@ let startAction = (event) => {
   //开始绘制
   context.stroke();
   //监听鼠标移动事件
-  canvas.addEventListener("mousemove", moveAction);
+  canvas.value.addEventListener("mousemove", moveAction);
 }
 
 //鼠标移动事件
@@ -67,7 +66,7 @@ let moveAction = (event) => {
 //鼠标抬起事件
 let endAction = () => {
   //移除鼠标移动事件
-  canvas.removeEventListener("mousemove", moveAction);
+  canvas.value.removeEventListener("mousemove", moveAction);
 }
 
 
@@ -149,7 +148,7 @@ let onCreateOfferSuccess = async (desc) => {
     await peerConnA.setLocalDescription(desc);
     onSetLocalSuccess(peerConnA);
   } catch (e) {
-    onSetSessionDescriptionError();
+    onSetSessionDescriptionError(e);
   }
 
   console.log('peerConnB开始设置远端描述');
@@ -159,7 +158,7 @@ let onCreateOfferSuccess = async (desc) => {
     onSetRemoteSuccess(peerConnB);
   } catch (e) {
     //创建会话描述错误
-    onSetSessionDescriptionError();
+    onSetSessionDescriptionError(e);
   }
 
   console.log('peerConnB开始创建应答Answer');
@@ -195,9 +194,9 @@ let getName = (pc) => {
 
 //获取到远端视频流
 let gotRemoteStream = (e) => {
-  if (remoteVideo.srcObject !== e.streams[0]) {
+  if (remoteVideo.value.srcObject !== e.streams[0]) {
     //取集合第一个元素
-    remoteVideo.srcObject = e.streams[0];
+    remoteVideo.value.srcObject = e.streams[0];
     console.log('peerConnB开始接收远端流');
   }
 }
@@ -244,10 +243,10 @@ let onIceCandidateB = async (event) => {
     if (event.candidate) {
       //将会peerConnB的Candidate添加至peerConnA里
       await peerConnA.addIceCandidate(event.candidate);
-      this.onAddIceCandidateSuccess(peerConnA);
+      onAddIceCandidateSuccess(peerConnA);
     }
   } catch (e) {
-    this.onAddIceCandidateError(peerConnA, e);
+    onAddIceCandidateError(peerConnA, e);
   }
   console.log(`IceCandidate数据:\n${event.candidate ? event.candidate.candidate : '(null)'}`);
 }
@@ -295,16 +294,13 @@ let hangup = () => {
     <h3>
       电子白板同步示例
     </h3>
-    {/* 画布Canvas容器 */}
-    <div className="small-canvas">
-      {/* Canvas不设置样式 */}
+    <div class="small-canvas">
       <canvas ref='canvas'></canvas>
     </div>
-    {/* 远端视频 */}
-    <video className="small-video" ref='remoteVideo' playsInline autoPlay></video>
+    <video class="small-video" ref='remoteVideo' playsInline autoPlay></video>
     <div>
-      <Button ref="callButton" onClick={this.call} style='{ marginRight: "10px" }'>呼叫</Button>
-      <Button ref="hangupButton" onClick={this.hangup} style='{ marginRight: "10px" }'>挂断</Button>
+      <el-button ref="callButton" @click=call :style='{ marginRight: "10px" }'>呼叫</el-button>
+      <el-button ref="hangupButton" @click=hangup :style='{ marginRight: "10px" }'>挂断</el-button>
     </div>
   </div>
 </template>

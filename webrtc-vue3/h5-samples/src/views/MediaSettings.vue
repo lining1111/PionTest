@@ -1,8 +1,7 @@
 <script setup lang="js">
-import { Modal, Button, Select } from 'antd';
 import SoundMeter from '@/utils/soundmeter';
 import {onMounted, reactive} from "vue";
-const Option = Select.Option;
+
 let state = reactive({
   //是否弹出对话框
   visible: false,
@@ -22,6 +21,9 @@ let state = reactive({
   audioLevel: 0,
 })
 
+let stream;
+let soundMeter;
+
 try {
   //AudioContext是用于管理和播放所有的声音
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -30,7 +32,7 @@ try {
 } catch (e) {
   console.log('网页音频API不支持.');
 }
-onMounted(()=> {
+onMounted(() => {
   if (window.localStorage) {
     //读取本地存储信息
     let deviceInfo = localStorage["deviceInfo"];
@@ -91,7 +93,7 @@ let updateDevices = () => {
           }
         }).then(() => {
       //处理好后将三种设备数据返回
-      let data = { videoDevices, audioDevices, audioOutputDevices };
+      let data = {videoDevices, audioDevices, audioOutputDevices};
       pResolve(data);
     });
   });
@@ -103,41 +105,40 @@ let soundMeterProcess = () => {
   var val = (window.soundMeter.instant.toFixed(2) * 348) + 1;
   //设置音量值状态
   state.audioLevel = val;
-  if (this.state.visible) {
+  if (state.visible) {
     //每隔100毫秒调用一次soundMeterProcess函数,模拟实时检测音频音量
     setTimeout(soundMeterProcess, 100);
   }
 }
 
 //开始预览
-let startPreview = () => {
+let startPreview=()=> {
   //判断window对象里是否有stream
-  if (window.stream) {
+  if (stream) {
     //关闭音视频流
-    closeMediaStream(window.stream);
+    closeMediaStream(stream);
   }
-  //SoundMeter声音测量,用于做声音音量测算使用的
-  this.soundMeter = window.soundMeter = new SoundMeter(window.audioContext);
-  let soundMeterProcess = soundMeterProcess;
-
   //视频预览对象
-  let videoElement = this.refs['previewVideo'];
+  let videoElement = document.getElementById('videoElement');
+  //SoundMeter声音测量,用于做声音音量测算使用的
+  soundMeter = new SoundMeter(window.audioContext);
+  // let soundMeterProcess = soundMeterProcess;
+
   //音频源
-  let audioSource = this.state.selectedAudioDevice;
+  let audioSource = state.selectedAudioDevice;
   //视频源
-  let videoSource = this.state.selectedVideoDevice;
+  let videoSource = state.selectedVideoDevice;
   //定义约束条件
   let constraints = {
     //设置音频设备Id
-    audio: { deviceId: audioSource ? { exact: audioSource } : undefined },
+    audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
     //设置视频设备Id
-    video: { deviceId: videoSource ? { exact: videoSource } : undefined }
+    video: {deviceId: videoSource ? {exact: videoSource} : undefined}
   };
   //根据约束条件获取数据流
   navigator.mediaDevices.getUserMedia(constraints)
       .then(function (stream) {
         //成功返回音视频流
-        window.stream = stream;
         videoElement.srcObject = stream;
         //将声音测量对象与流连接起来
         soundMeter.connectToSource(stream);
@@ -146,8 +147,10 @@ let startPreview = () => {
         //返回枚举设备
         return navigator.mediaDevices.enumerateDevices();
       })
-      .then((devces) => { })
-      .catch((erro) => { });
+      .then((devces) => {
+      })
+      .catch((erro) => {
+      });
 
 
 }
@@ -155,8 +158,8 @@ let startPreview = () => {
 //停止预览
 let stopPreview = () => {
   //关闭音视频流
-  if (window.stream) {
-    this.closeMediaStream(window.stream);
+  if (stream) {
+    closeMediaStream(stream);
   }
 }
 
@@ -196,58 +199,53 @@ let closeMediaStream = (stream) => {
 
 //弹出对话框
 let showModal = () => {
-  this.setState({
-    visible: true,
-  });
+  console.log('showModal')
+  state.visible = true;
   //延迟100毫秒后开始预览
-  setTimeout(this.startPreview, 100);
+  setTimeout(startPreview, 100);
 }
 
 //点击确定处理
 let handleOk = (e) => {
   //关闭对话框
-  this.setState({
-    visible: false,
-  });
+  state.visible = false;
   //判断是否能存储
   if (window.localStorage) {
     //设置信息
     let deviceInfo = {
       //音频设备Id
-      audioDevice: this.state.selectedAudioDevice,
+      audioDevice: state.selectedAudioDevice,
       //视频设备Id
-      videoDevice: this.state.selectedVideoDevice,
+      videoDevice: state.selectedVideoDevice,
       //分辨率
-      resolution: this.state.resolution,
+      resolution: state.resolution,
     };
     //使用JSON转成字符串后存储在本地
     localStorage["deviceInfo"] = JSON.stringify(deviceInfo);
   }
   //停止预览
-  this.stopPreview();
+  stopPreview();
 }
 
 //取消设置
 let handleCancel = (e) => {
   //关闭对话框
-  this.setState({
-    visible: false,
-  });
+  state.visible = false
   //停止预览
-  this.stopPreview();
+  stopPreview();
 }
 
 //音频输入设备改变
 let handleAudioDeviceChange = (e) => {
   console.log('选择的音频输入设备为: ' + JSON.stringify(e));
   state.selectedAudioDevice = e;
-  setTimeout(this.startPreview, 100);
+  setTimeout(startPreview, 100);
 }
 //视频输入设备改变
 let handleVideoDeviceChange = (e) => {
   console.log('选择的视频输入设备为: ' + JSON.stringify(e));
   state.selectedVideoDevice = e;
-  setTimeout(this.startPreview, 100);
+  setTimeout(startPreview, 100);
 }
 //分辨率选择改变
 let handleResolutionChange = (e) => {
@@ -262,62 +260,62 @@ let handleResolutionChange = (e) => {
       设置综合示例
     </h3>
     <button @click=showModal>修改设备</button>
-    <Modal
+
+    <el-dialog
         title="修改设备"
-        visible={this.state.visible}
-        onOk={this.handleOk}
-        onCancel={this.handleCancel}
-        okText="确定"
-        cancelText="取消">
+        v-model="state.visible">
+      <el-button @click="handleOk">确定</el-button>
+      <el-button @click="handleCancel">取消</el-button>
       <div class="item">
         <span class="item-left">麦克风</span>
         <div class="item-right">
-          <Select v-model=state?.selectedAudioDevice :style="{ width: 350 }"
-                  @change=handleAudioDeviceChange>
-            {
-            this.state.audioDevices.map((device, index) => {
-            return (<Option value={device.deviceId} key={device.deviceId}>{device.label}</Option>);
-            })
-            }
-          </Select>
+          <el-select v-model=state.selectedAudioDevice :style="{ width: 350 }"
+                     @change=handleAudioDeviceChange>
+            <el-option v-for="device in state.audioDevices"
+                       :value="device.deviceId"
+                       :key="device.deviceId"
+            >{{ device.label }}
+            </el-option>
+          </el-select>
           <div ref="progressbar" :style="{
-               width: this.state.audioLevel + 'px',
+               width: state.audioLevel + 'px',
           height: '10px',
           backgroundColor: '#8dc63f',
           marginTop: '20px',
           }">
+          </div>
         </div>
       </div>
-  </div>
-  <div class="item">
-    <span class="item-left">摄像头</span>
-    <div class="item-right">
-      <Select v-model=state.selectedVideoDevice :style="{ width: 350 }"
-              @change=handleVideoDeviceChange>
-        {
-        this.state.videoDevices.map((device, index) => {
-        return (<Option value={device.deviceId} key={device.deviceId}>{device.label}</Option>);
-        })
-        }
-      </Select>
-      <div class="video-container">
-        <video id='previewVideo' ref='previewVideo' autoPlay playsInline :style="{ width: '100%', height: '100%', objectFit: 'contain' }"></video>
-      </div>
+      <div class="item">
+        <span class="item-left">摄像头</span>
+        <div class="item-right">
+          <el-select v-model=state.selectedVideoDevice :style="{ width: 350 }"
+                     @change=handleVideoDeviceChange>
+            <el-option v-for="device in state.videoDevices"
+                       :value="device.deviceId"
+                       :key="device.deviceId"
+            >{{ device.label }}
+            </el-option>
+          </el-select>
+          <div class="video-container">
+            <video id='videoElement' ref='videoElement' autoPlay playsInline
+                   :style="{ width: '100%', height: '100%', objectFit: 'contain' }"></video>
+          </div>
 
-    </div>
-  </div>
-  <div class="item">
-    <span class="item-left">清晰度</span>
-    <div class="item-right">
-      <Select :style="{ width: 350 }" v-model=state.resolution @change=handleResolutionChange>
-        <Option value="qvga">流畅(320x240)</Option>
-        <Option value="vga">标清(640x360)</Option>
-        <Option value="hd">高清(1280x720)</Option>
-        <Option value="fullhd">超清(1920x1080)</Option>
-      </Select>
-    </div>
-  </div>
-  </Modal>
+        </div>
+      </div>
+      <div class="item">
+        <span class="item-left">清晰度</span>
+        <div class="item-right">
+          <el-select :style="{ width: 350 }" v-model=state.resolution @change=handleResolutionChange>
+            <el-option value="qvga">流畅(320x240)</el-option>
+            <el-option value="vga">标清(640x360)</el-option>
+            <el-option value="hd">高清(1280x720)</el-option>
+            <el-option value="fullhd">超清(1920x1080)</el-option>
+          </el-select>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 

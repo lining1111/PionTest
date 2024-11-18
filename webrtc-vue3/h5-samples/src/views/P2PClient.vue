@@ -1,10 +1,13 @@
-<script setup lang="ts">
-import { List, Button } from "antd";
+<script setup lang="js">
 import HangupIcon from "mdi-react/PhoneHangupIcon";
 import VideoIcon from "mdi-react/VideoIcon";
 import VideocamOffIcon from "mdi-react/VideocamOffIcon";
 import MicrophoneIcon from "mdi-react/MicrophoneIcon";
 import MicrophoneOffIcon from "mdi-react/MicrophoneOffIcon";
+import P2PVideoCall from '@/p2p/P2PVideoCall'
+import P2PLogin from "@/p2p/P2PLogin.vue";
+import LocalVideoView from "@/p2p/LocalVideoView.vue";
+import RemoteVideoView from "@/p2p/RemoteVideoView.vue";
 
 let p2pVideoCall = null;
 let state = {
@@ -145,7 +148,7 @@ let loginHandler = (userName,roomId) =>{
     {!this.state.isLogin ?
     <div className="login-container">
       <h2>一对一视频通话案例</h2>
-      <P2PLogin loginHandler={this.loginHandler}/>
+      <P2PLogin :loginHandler=loginHandler/>
     </div>
     :
     !this.state.isVideoCall ?

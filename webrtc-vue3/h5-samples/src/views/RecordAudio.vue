@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from "antd";
 import {onMounted, reactive, ref} from "vue";
 let stream;
 //录制对象
@@ -120,39 +119,33 @@ let handleDataAvailable = (event) => {
     <h3>
       录制音频示例
     </h3>
-    {/* 音频播放器,播放录制音频 */}
     <audio ref="audioPlayer" controls autoPlay></audio>
     <div>
-      <Button
-          class="button"
+      <el-button
           :disabled="state.status != 'start'"
           @click=startClickHandler>
         打开麦克风
-      </Button>
-      <Button
-          class="button"
+      </el-button>
+      <el-button
           :disabled="state.status != 'startRecord'"
           @click=startRecordButtonClickHandler>
         开始录制
-      </Button>
-      <Button
-          class="button"
+      </el-button>
+      <el-button
           :disabled="state.status != 'stopRecord'"
           @click=stopRecordButtonClickHandler>
         停止录制
-      </Button>
-      <Button
-          class="button"
+      </el-button>
+      <el-button
           :disabled="state.status != 'play'"
           @click=playButtonClickHandler>
         播放
-      </Button>
-      <Button
-          class="button"
+      </el-button>
+      <el-button
           :disabled="state.status != 'download'"
           @click="downloadButtonClickHandler">
         下载
-      </Button>
+      </el-button>
     </div>
   </div>
 </template>

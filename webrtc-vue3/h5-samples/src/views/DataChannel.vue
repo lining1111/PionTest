@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from "antd";
 import {ref} from "vue";
 
 //本地连接对象
@@ -10,6 +9,9 @@ let remoteConnection;
 let sendChannel;
 //接收通道
 let receiveChannel;
+
+let dataChannelSend = ref();
+let dataChannelReceive = ref();
 
 //呼叫
 let call = async () => {
@@ -203,8 +205,7 @@ let hangup = () => {
 }
 
 let sendData = () => {
-  let dataChannelSend = ref();
-  const data = dataChannelSend.value;
+  const data = dataChannelSend.value.value;
   sendChannel.send(data);
   console.log('发送的数据:' + data);
 }
@@ -225,8 +226,8 @@ let receiveChannelCallback = (event) => {
 //接收消息处理
 let onReceiveMessageCallback = (event) => {
   console.log('接收的数据:' + event.data);
-  let dataChannelReceive = ref();
-  dataChannelReceive.value = event.data;
+
+  dataChannelReceive.value.value = event.data;
 }
 
 //发送通道状态变化
@@ -261,9 +262,9 @@ let onReceiveChannelStateChange = () => {
       </div>
     </div>
     <div>
-      <Button onClick={this.call} style='{ marginRight: "10px" }'>呼叫</Button>
-      <Button onClick={this.sendData} style='{ marginRight: "10px" }'>发送</Button>
-      <Button onClick={this.hangup} style='{ marginRight: "10px" }'>挂断</Button>
+      <el-button @click=call :style='{ marginRight: "10px" }'>呼叫</el-button>
+      <el-button @click=sendData :style='{ marginRight: "10px" }'>发送</el-button>
+      <el-button @click=hangup :style='{ marginRight: "10px" }'>挂断</el-button>
     </div>
   </div>
 </template>

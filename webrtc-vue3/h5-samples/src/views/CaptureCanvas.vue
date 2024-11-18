@@ -3,8 +3,9 @@
 import {onMounted, ref} from "vue";
 
 let stream;
+const video = ref();
 //画布对象
-let canvas;
+let canvas = ref();
 //画布2D内容
 let context;
 
@@ -14,8 +15,8 @@ onMounted((e)=>{
 
 //开始捕获Canvas
 let startCaptureCanvas = async (e) => {
-  stream = canvas.captureStream(10);
-  const video = ref();
+  stream = canvas.value.captureStream(10);
+
   //将视频对象的源指定为stream
   video.value.srcObject = stream;
 
@@ -25,7 +26,7 @@ let startCaptureCanvas = async (e) => {
 //画线
 let drawLine = () => {
   //获取Canvas的2d内容
-  context = canvas.getContext("2d");
+  context = canvas.value.getContext("2d");
 
   //填充颜色
   context.fillStyle = '#CCC';
@@ -37,9 +38,9 @@ let drawLine = () => {
   context.strokeStyle = "#FF0000";
 
   //监听画板鼠标按下事件 开始绘画
-  canvas.addEventListener("mousedown", startAction);
+  canvas.value.addEventListener("mousedown", startAction);
   //监听画板鼠标抬起事件 结束绘画
-  canvas.addEventListener("mouseup", endAction);
+  canvas.value.addEventListener("mouseup", endAction);
 }
 
 //鼠标按下事件
@@ -51,7 +52,7 @@ let startAction = (event) => {
   //开始绘制
   context.stroke();
   //监听鼠标移动事件
-  canvas.addEventListener("mousemove", moveAction);
+  canvas.value.addEventListener("mousemove", moveAction);
 }
 
 //鼠标移动事件
@@ -65,7 +66,7 @@ let moveAction = (event) => {
 //鼠标抬起事件
 let endAction = () => {
   //移除鼠标移动事件
-  canvas.removeEventListener("mousemove", moveAction);
+  canvas.value.removeEventListener("mousemove", moveAction);
 }
 </script>
 
@@ -75,12 +76,11 @@ let endAction = () => {
       捕获Canvas作为媒体流示例
     </h3>
     <div>
-      {/* 画布Canvas容器 */}
-      <div className="small-canvas">
+      <div class="small-canvas">
         {/* Canvas不设置样式 */}
         <canvas ref='canvas'></canvas>
       </div>
-      <video className="small-video" ref='video' playsInline autoPlay></video>
+      <video class="small-video" ref='video' playsInline autoPlay></video>
     </div>
   </div>
 </template>

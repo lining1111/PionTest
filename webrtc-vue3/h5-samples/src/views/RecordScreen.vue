@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from "antd";
 import {ref} from "vue";
 
 //录制对象
@@ -108,9 +107,9 @@ let stopRecord = (e) => {
       录制屏幕示例
     </h3>
     {/* 捕获屏幕数据渲染 */}
-    <video className="video" ref="myVideo" autoPlay playsInline></video>
-    <Button onClick={this.startCaptureScreen} style="{ marginRight: 10px }">开始</Button>
-    <Button onClick={this.stopRecord}>停止</Button>
+    <video  ref="myVideo" autoPlay playsInline></video>
+    <el-button @click=startCaptureScreen :style="{ marginRight: 10 }">开始</el-button>
+    <el-button @click=stopRecord>停止</el-button>
   </div>
 </template>
 
