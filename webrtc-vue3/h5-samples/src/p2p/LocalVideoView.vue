@@ -1,9 +1,9 @@
 <script setup lang="js">
-import PropTypes from "prop-types";
 import VideocamOffIcon from "mdi-react/VideocamOffIcon";
-import {onMounted, ref} from "vue";
+import {onMounted} from "vue";
+const props = defineProps(['id','stream'])
 onMounted(()=>{
-  let video = this.refs[this.props.id];
+  let video = document.getElementById(props.id);
   //指定视频的源为stream
   video.srcObject = this.props.stream;
   //当获取到MetaData数据后开始播放
@@ -13,7 +13,7 @@ onMounted(()=>{
 })
 
 //本地小视频样式
-const small = {
+const small = reactive({
   display:'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -39,28 +39,23 @@ const small = {
   zIndex: 99,
   //边框弧度
   borderRadius: '4px',
-};
+});
 //禁止视频图标样式
-const videoMuteIcon = {
+const videoMuteIcon = reactive({
   position: 'absolute',
   color:'#fff',
-}
+})
 </script>
 
 <template>
-
-
-  <div key={this.props.id}
-<!--  小视频样式-->
-  style={small}>
-  {/* 设置ref及id值 视频自动播放 objectFit为cover模式可以平铺整个视频 */}
-  <video ref={this.props.id} id={this.props.id}
-         autoPlay playsInline muted={true}
-         style='{ width: 100%, height: 100%, objectFit: cover, }' />
-  {
+  <div :key=props.id
+  :style=small>
+<!--  设置ref及id值 视频自动播放 objectFit为cover模式可以平铺整个视频-->
+  <video :ref=props.id :id=props.id
+         autoPlay playsInline muted=true
+         :style='{ width: "100%", height: "100%", objectFit: cover, }' />
 <!--  判断禁止视频属性值-->
-  this.props.muted? <VideocamOffIcon :style=videoMuteIcon/> : null
-  }
+    <VideocamOffIcon :style=videoMuteIcon></VideocamOffIcon>
   </div>
 </template>
 

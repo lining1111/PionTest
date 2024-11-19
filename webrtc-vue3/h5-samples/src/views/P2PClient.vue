@@ -1,11 +1,6 @@
 <script setup lang="js">
-import HangupIcon from "mdi-react/PhoneHangupIcon";
-import VideoIcon from "mdi-react/VideoIcon";
-import VideocamOffIcon from "mdi-react/VideocamOffIcon";
-import MicrophoneIcon from "mdi-react/MicrophoneIcon";
-import MicrophoneOffIcon from "mdi-react/MicrophoneOffIcon";
-import P2PVideoCall from '@/p2p/P2PVideoCall'
 import P2PLogin from "@/p2p/P2PLogin.vue";
+import P2PVideoCall from '@/p2p/P2PVideoCall'
 import LocalVideoView from "@/p2p/LocalVideoView.vue";
 import RemoteVideoView from "@/p2p/RemoteVideoView.vue";
 
@@ -16,13 +11,13 @@ let state = {
   //自己Id
   userId: null,
   //用户名
-  userName:'',
+  userName: '',
   //房间号
-  roomId:'111111',
+  roomId: '111111',
   //是否正在视频通话
   isVideoCall: false,
   //是否登录房间
-  isLogin:false,
+  isLogin: false,
   //本地流
   localStream: MediaStream,
   //远端流
@@ -37,10 +32,10 @@ let connectServer = () => {
   //WebSocket连接url
   var p2pUrl = 'wss://' + window.location.hostname + ':8000/ws';
   var turnUrl = 'https://' + window.location.hostname + ':9000/api/turn?service=turn&username=sample';
-  console.log("信令服务器地址:" +p2pUrl);
-  console.log("中转服务器地址:" +turnUrl);
+  console.log("信令服务器地址:" + p2pUrl);
+  console.log("中转服务器地址:" + turnUrl);
   //初始化信令 传入url及名称
-  p2pVideoCall = new P2PVideoCall(p2pUrl,turnUrl,state.userName,state.roomId);
+  p2pVideoCall = new P2PVideoCall(p2pUrl, turnUrl, state.userName, state.roomId);
   //监听更新用户列表事件
   p2pVideoCall.on('updateUserList', (users, self) => {
     state.users = users;
@@ -118,19 +113,19 @@ let onAudioClickHandler = () => {
 let onToggleLocalAudioTrack = (muted) => {
   //获取所有音频轨道
   var audioTracks = state.localStream.getAudioTracks();
-  if(audioTracks.length === 0){
+  if (audioTracks.length === 0) {
     console.log("没有本地音频");
     return;
   }
   console.log("打开/关闭本地音频.");
   //循环迭代所有轨道
-  for(var i = 0; i<audioTracks.length; ++i){
+  for (var i = 0; i < audioTracks.length; ++i) {
     //设置每个轨道的enabled值
     audioTracks[i].enabled = !muted;
   }
 }
 
-let loginHandler = (userName,roomId) =>{
+let loginHandler = (userName, roomId) => {
   state.isLogin = true;
   state.userName = userName;
   state.roomId = roomId;
@@ -144,68 +139,62 @@ let loginHandler = (userName,roomId) =>{
     <h3>
       一对一视频通话示例
     </h3>
-    {/* 判断打开状态 */}
-    {!this.state.isLogin ?
-    <div className="login-container">
+    <div class="login-container" v-if="state.isLogin">
       <h2>一对一视频通话案例</h2>
-      <P2PLogin :loginHandler=loginHandler/>
+      <P2PLogin loginHandler=loginHandler></P2PLogin>>
     </div>
     :
-    !this.state.isVideoCall ?
-    <List bordered header="一对一视频通话案例" footer="终端列表(Web/Android/iOS)">
-      {
-      //迭代所有的用户
-      this.state.users.map((user, i) => {
-      return (
-      <List.Item key={user.id}>
-        <div className="list-item">
-          {user.name + user.id}
-          {user.id !== this.state.userId &&
-          <div>
-            <Button type="link"  onClick={() => this.handleStartCall(user.id, 'video')}>视频</Button>
-            <Button type="link"  onClick={() => this.handleStartCall(user.id, 'screen')}>共享桌面</Button>
-          </div>
-          }
-        </div>
-      </List.Item>
-      )
-      })
-      }
-    </List>
+<!--    <el-table v-if="state.isVideoCall" bordered title="一对一视频通话案例" :data="state.users" >-->
+<!--      <el-table-column prop="name+id" label="ID">-->
+<!--        <div v-if=""></div>-->
+<!--      </el-table-column>-->
+<!--      {-->
+<!--      //迭代所有的用户-->
+<!--      this.state.users.map((user, i) => {-->
+<!--      return (-->
+<!--      <List.Item key={user.id}>-->
+<!--        <div className="list-item">-->
+<!--          {user.name + user.id}-->
+<!--          {user.id !== this.state.userId &&-->
+<!--          <div>-->
+<!--            <el-button type="link" @click="()=> {handleStartCall(user.id, 'video')}">视频</el-button>-->
+<!--            <el-button type="link" @click="()=> {handleStartCall(user.id, 'screen')}">共享桌面</el-button>-->
+<!--          </div>-->
+<!--          }-->
+<!--        </div>-->
+<!--      </List.Item>-->
+<!--      )-->
+<!--      })-->
+<!--      }-->
+<!--    </el-table>-->
     :
+
     <div>
       <div>
-        {
-        //渲染本地视频
-        this.state.remoteStream != null ? <RemoteVideoView stream={this.state.remoteStream} id={'remoteview'} /> : null
-        }
-        {
-        //渲染远端视频
-        this.state.localStream != null ? <LocalVideoView stream={this.state.localStream} muted={this.state.videoMuted} id={'localview'} /> : null
+        <!--        渲染远端视频-->
+        <RemoteVideoView v-if="state.remoteStream" stream=state.remoteStream id='remoteview'/>
+        <!--        渲染本地视频-->
+        <LocalVideoView v-if="state.localStream" stream=state.localStream muted=state.videoMuted id='localview'/>
         }
       </div>
-      <div className="btn-tools">
-        {/* 打开/关闭视频 */}
-        <Button className="button" ghost size="large" shape="circle"
-                icon={this.state.videoMuted ? <VideocamOffIcon /> : <VideoIcon />}
-        onClick={this.onVideoOnClickHandler}
-        >
-        </Button>
-        {/* 挂断 */}
-        <Button className="button" ghost size="large" shape="circle"
-                icon={<HangupIcon />}
-        onClick={this.handleUp}
-        >
-        </Button>
-        {/* 打开/关闭音频 */}
-        <Button ghost size="large" shape="circle"
-                icon={this.state.audioMuted ? <MicrophoneOffIcon /> : <MicrophoneIcon />}
-        onClick={this.onAudioClickHandler}
-        >
-        </Button>
+      <div class="btn-tools">
+        <!--        打开/关闭视频-->
+        <el-button class="button" ghost size="large" shape="circle"
+                   icon="state.videoMuted ? <VideocamOffIcon /> : <VideoIcon />"
+                   @click=onVideoOnClickHandler>
+        </el-button>
+        <!--        挂断-->
+        <el-button class="button" ghost size="large" shape="circle"
+                   icon="<HangupIcon />"
+                   @click=handleUp>
+        </el-button>
+        <!--        打开/关闭音频-->
+        <el-button ghost size="large" shape="circle"
+                   icon="state.audioMuted ? <MicrophoneOffIcon /> : <MicrophoneIcon />"
+                   @click=onAudioClickHandler>
+        </el-button>
       </div>
     </div>
-    }
   </div>
 </template>
 

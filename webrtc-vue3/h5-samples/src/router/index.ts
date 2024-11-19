@@ -20,7 +20,7 @@ import PeerConnectionVideo from "@/views/PeerConnectionVideo.vue";
 import PeerConnectionCanvas from "@/views/PeerConnectionCanvas.vue";
 import DataChannel from "@/views/DataChannel.vue";
 import DataChannelFile from "@/views/DataChannelFile.vue";
-// import P2PClient from "@/views/P2PClient.vue";
+import P2PClient from "@/views/P2PClient.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -130,11 +130,11 @@ const router = createRouter({
             name: 'dataChannelFile',
             component: DataChannelFile,
         },
-        // {
-        //     path: '/p2pClient',
-        //     name: 'p2pClient',
-        //     component: P2PClient,
-        // },
+        {
+            path: '/p2pClient',
+            name: 'p2pClient',
+            component: P2PClient,
+        },
     ],
 })
 
