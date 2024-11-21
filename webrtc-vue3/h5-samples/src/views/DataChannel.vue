@@ -33,6 +33,7 @@ let call = async () => {
   sendChannel.onopen = onSendChannelStateChange;
   //onclose事件监听
   sendChannel.onclose = onSendChannelStateChange;
+  dataChannelSend.value.disabled = false;
 
   //创建RTCPeerConnection对象
   remoteConnection = new RTCPeerConnection(configuration);

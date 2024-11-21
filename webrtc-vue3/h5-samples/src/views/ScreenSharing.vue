@@ -50,13 +50,13 @@ function handleError(error:any) {
 </script>
 
 <template>
-  <div>
+  <div class="container">
     <h3>
       共享屏幕示例
     </h3>
 <!--    捕获屏幕数据渲染 -->
-    <video  ref="myVideo" autoPlay playsInline></video>
-    <el-button @click=startScreenShare>开始共享</el-button>
+    <video class="video row" ref="myVideo" autoPlay playsInline></video>
+    <el-button class="row" @click=startScreenShare>开始共享</el-button>
   </div>
 </template>
 

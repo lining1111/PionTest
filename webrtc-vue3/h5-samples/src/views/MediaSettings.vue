@@ -1,12 +1,21 @@
-<script setup lang="js">
+<script setup lang="ts">
 import SoundMeter from '@/utils/soundmeter';
-import {onMounted, reactive} from "vue";
+import {onMounted, reactive, ref} from "vue";
+
+interface Data {
+  //视频输入设备列表
+  videoDevices: MediaDeviceInfo[],
+  //音频输入设备列表
+  audioDevices: MediaDeviceInfo[],
+  //音频输出设备列表
+  audioOutputDevices: MediaDeviceInfo[],
+}
 
 let state = reactive({
   //是否弹出对话框
   visible: false,
   //视频输入设备列表
-  videoDevices: [],
+  videoDevices :[],
   //音频输入设备列表
   audioDevices: [],
   //音频输出设备列表
@@ -23,12 +32,12 @@ let state = reactive({
 
 let stream;
 let soundMeter;
+let audioContext;
 
 try {
   //AudioContext是用于管理和播放所有的声音
-  window.AudioContext = window.AudioContext || window.webkitAudioContext;
   //实例化AudioContext
-  window.audioContext = new AudioContext();
+  audioContext = new AudioContext();
 } catch (e) {
   console.log('网页音频API不支持.');
 }
@@ -58,22 +67,22 @@ onMounted(() => {
       state.selectedVideoDevice = data.videoDevices[0].deviceId;
     }
     //设置设备列表状态值
-    state.videoDevices = data.videoDevices;
-    state.audioDevices = data.audioDevices;
-    state.audioOutputDevices = data.audioOutputDevices;
+    state.videoDevices = data.videoDevices as [];
+    state.audioDevices = data.audioDevices as [];
+    state.audioOutputDevices = data.audioOutputDevices as [];
   });
-
+  console.log('state',state)
 })
 
 //更新设备
 let updateDevices = () => {
-  return new Promise((pResolve, pReject) => {
+  return new Promise<Data>((pResolve, pReject) => {
     //视频输入设备列表
-    let videoDevices = [];
+    let videoDevices:MediaDeviceInfo[]=[];
     //音频输入设备列表
-    let audioDevices = [];
+    let audioDevices :MediaDeviceInfo[]= [];
     //音频输出设备列表
-    let audioOutputDevices = [];
+    let audioOutputDevices:MediaDeviceInfo[] = [];
     //枚举所有设备
     navigator.mediaDevices.enumerateDevices()
         //返回设备列表
@@ -102,7 +111,7 @@ let updateDevices = () => {
 //音频音量处理
 let soundMeterProcess = () => {
   //读取音量值,再乘以一个系数,可以得到音量条的宽度
-  var val = (window.soundMeter.instant.toFixed(2) * 348) + 1;
+  var val = (soundMeter.instant.toFixed(2) * 348) + 1;
   //设置音量值状态
   state.audioLevel = val;
   if (state.visible) {
@@ -110,7 +119,8 @@ let soundMeterProcess = () => {
     setTimeout(soundMeterProcess, 100);
   }
 }
-
+//视频预览对象
+let myDialog = ref();
 //开始预览
 let startPreview=()=> {
   //判断window对象里是否有stream
@@ -118,10 +128,9 @@ let startPreview=()=> {
     //关闭音视频流
     closeMediaStream(stream);
   }
-  //视频预览对象
-  let videoElement = document.getElementById('videoElement');
+  let videoElement = ref();
   //SoundMeter声音测量,用于做声音音量测算使用的
-  soundMeter = new SoundMeter(window.audioContext);
+  soundMeter = new SoundMeter(audioContext);
   // let soundMeterProcess = soundMeterProcess;
 
   //音频源
@@ -139,7 +148,7 @@ let startPreview=()=> {
   navigator.mediaDevices.getUserMedia(constraints)
       .then(function (stream) {
         //成功返回音视频流
-        videoElement.srcObject = stream;
+        videoElement.value.srcObject = stream;
         //将声音测量对象与流连接起来
         soundMeter.connectToSource(stream);
         //每隔100毫秒调用一次soundMeterProcess函数,模拟实时检测音频音量
@@ -261,7 +270,7 @@ let handleResolutionChange = (e) => {
     </h3>
     <button @click=showModal>修改设备</button>
 
-    <el-dialog
+    <el-dialog ref="myDialog"
         title="修改设备"
         v-model="state.visible">
       <el-button @click="handleOk">确定</el-button>
@@ -271,7 +280,7 @@ let handleResolutionChange = (e) => {
         <div class="item-right">
           <el-select v-model=state.selectedAudioDevice :style="{ width: 350 }"
                      @change=handleAudioDeviceChange>
-            <el-option v-for="device in state.audioDevices"
+            <el-option v-for="device in (state.audioDevices as MediaDeviceInfo[])"
                        :value="device.deviceId"
                        :key="device.deviceId"
             >{{ device.label }}
@@ -291,7 +300,7 @@ let handleResolutionChange = (e) => {
         <div class="item-right">
           <el-select v-model=state.selectedVideoDevice :style="{ width: 350 }"
                      @change=handleVideoDeviceChange>
-            <el-option v-for="device in state.videoDevices"
+            <el-option v-for="device in (state.videoDevices as MediaDeviceInfo[])"
                        :value="device.deviceId"
                        :key="device.deviceId"
             >{{ device.label }}

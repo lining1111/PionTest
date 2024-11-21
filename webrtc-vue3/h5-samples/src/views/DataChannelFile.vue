@@ -21,6 +21,8 @@ let fileInput = ref();
 let sendProgress = ref();
 //接收进度条
 let receiveProgress = ref();
+//获取下载连接对象
+let download = ref()
 
 onMounted(()=>{
   //监听change事件,判断文件是否选择
@@ -259,7 +261,7 @@ let sendData = () => {
     //使用文件二进制数据长度作为偏移量
     offset += e.target.result.byteLength;
     //使用偏移量作为发送进度
-    sendProgress.value = offset;
+    sendProgress.value.value = offset;
     console.log('当前文件发送进度为:', offset);
     //判断偏移量是否小于文件大小
     if (offset < file.size) {
@@ -303,7 +305,7 @@ let onReceiveMessageCallback = (event:any) => {
   //设置当前接收文件的大小
   receivedSize += event.data.byteLength;
   //使用接收文件的大小表示当前接收进度
-  receiveProgress.value = receivedSize;
+  receiveProgress.value.value = receivedSize;
 
   const file = fileInput.value.files[0];
   //判断当前接收的文件大小是否等于文件的大小
@@ -313,8 +315,6 @@ let onReceiveMessageCallback = (event:any) => {
     //将缓存数据置为空
     receiveBuffer = [];
 
-    //获取下载连接对象
-    let download = ref()
     //创建下载文件对象及链接
     download.value.href = URL.createObjectURL(received);
     download.value.download = file.name;

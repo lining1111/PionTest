@@ -1,5 +1,15 @@
-<script setup lang="js" name="DeviceSelect">
-import {onBeforeMount, onMounted, reactive, ref} from "vue";
+<script setup lang="ts">
+import {onMounted, reactive, ref} from "vue";
+
+interface Data {
+  //视频输入设备列表
+  videoDevices: MediaDeviceInfo[],
+  //音频输入设备列表
+  audioDevices: MediaDeviceInfo[],
+  //音频输出设备列表
+  audioOutputDevices: MediaDeviceInfo[],
+}
+
 let state = reactive({
   //当前选择的音频输入设备
   selectedAudioDevice: "",
@@ -15,11 +25,9 @@ let state = reactive({
   audioOutputDevices: [],
 })
 
-
 let previewVideo = ref()
-onMounted( () => {
+onMounted(() => {
   updateDevices().then((data) => {
-    console.log(data)
     //判断当前选择的音频输入设备是否为空并且是否有设备
     if (state.selectedAudioDevice === "" && data.audioDevices.length > 0) {
       //默认选中第一个设备
@@ -37,22 +45,23 @@ onMounted( () => {
       state.selectedVideoDevice = data.videoDevices[0].deviceId;
     }
     //设置当前设备Id
-    state.videoDevices = data.videoDevices;
-    state.audioDevices = data.audioDevices;
-    state.audioOutputDevices = data.audioOutputDevices;
+    state.videoDevices = data.videoDevices as [];
+    state.audioDevices = data.audioDevices as [];
+    state.audioOutputDevices = data.audioOutputDevices as [];
+    console.log(state)
   })
 })
 
 
 //更新设备列表
 let updateDevices = () => {
-  return new Promise((pResolve, pReject) => {
+  return new Promise<Data>((pResolve, pReject) => {
     //视频输入设备列表
-    let videoDevices = [];
+    let videoDevices: MediaDeviceInfo[] = [];
     //音频输入设备列表
-    let audioDevices = [];
+    let audioDevices: MediaDeviceInfo[] = [];
     //音频输出设备列表
-    let audioOutputDevices = [];
+    let audioOutputDevices: MediaDeviceInfo[] = [];
     //枚举所有设备
     navigator.mediaDevices.enumerateDevices()
         //返回设备列表
@@ -72,7 +81,7 @@ let updateDevices = () => {
           }
         }).then(() => {
       //处理好后将三种设备数据返回
-      let data = {videoDevices, audioDevices, audioOutputDevices};
+      let data: Data = {videoDevices, audioDevices, audioOutputDevices};
       pResolve(data);
     });
   });
@@ -142,10 +151,10 @@ let handleAudioOutputDeviceChange = (e) => {
     <h3>
       设备枚举示例
     </h3>
-     音频输入设备列表
+    音频输入设备列表
     <el-select v-model="state.selectedAudioDevice" :style="{ width: 150,marginRight:'10px' }"
                @change="handleAudioDeviceChange">
-      <el-option v-for="device in state.audioDevices"
+      <el-option v-for="device in (state.audioDevices as MediaDeviceInfo[])"
                  :value="device.deviceId"
                  :key="device.deviceId"
       >{{ device.label }}
@@ -153,8 +162,8 @@ let handleAudioOutputDeviceChange = (e) => {
     </el-select>
     音频输出设备列表
     <el-select v-model=state.selectedAudioOutputDevice :style="{ width: 150,marginRight:'10px' }"
-            @change=handleAudioOutputDeviceChange>
-      <el-option v-for="device in state.audioOutputDevices"
+               @change=handleAudioOutputDeviceChange>
+      <el-option v-for="device in (state.audioOutputDevices as MediaDeviceInfo[])"
                  :value="device.deviceId"
                  :key="device.deviceId"
       >{{ device.label }}
@@ -162,12 +171,12 @@ let handleAudioOutputDeviceChange = (e) => {
     </el-select>
     视频频输入设备列表
     <el-select v-model=state.selectedVideoDevice :style="{ width: 150 }"
-            @change=handleVideoDeviceChange>
-      <el-option v-for="device in state.videoDevices"
+               @change=handleVideoDeviceChange>
+      <el-option v-for="device in (state.videoDevices as MediaDeviceInfo[])"
                  :value="device.deviceId"
                  :key="device.deviceId"
       >{{ device.label }}
-        </el-option>
+      </el-option>
     </el-select>
     视频预览展示
     <video ref='previewVideo' autoPlay playsInline :style="{ objectFit: 'contain',marginTop:'10px' }">

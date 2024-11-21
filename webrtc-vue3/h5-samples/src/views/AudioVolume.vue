@@ -1,26 +1,28 @@
 <script setup lang="js">
 
-import {onMounted, ref} from "vue";
+import {onMounted,reactive} from "vue";
 
 import SoundMeter from '@/utils/soundmeter';
 
-let state = ref({
+let state = reactive({
   audioLevel:0,
 })
 
-var soundMeter;
+let audioContext;
+let soundMeter;
 
 onMounted(()=>{
   try {
     //AudioContext是用于管理和播放所有的声音
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     //实例化AudioContext
-    window.audioContext = new AudioContext();
+    audioContext = new AudioContext();
+    console.log('ac',audioContext)
   } catch (e) {
     console.log('网页音频API不支持.');
   }
 //SoundMeter声音测量,用于做声音音量测算使用的
-  soundMeter = new SoundMeter(window.audioContext);
+  soundMeter = new SoundMeter(audioContext);
 
   const constraints = {
     //启用音频
@@ -44,7 +46,7 @@ let soundMeterProcess = () => {
   //读取音量值,再乘以一个系数,可以得到音量条的宽度
   var val = (soundMeter.instant.toFixed(2) * 348) + 1;
   //设置音量值状态
-  state.value.audioLevel = val;
+  state.audioLevel = val;
   // console.log('val',val)
   //每隔100毫秒调用一次soundMeterProcess函数,模拟实时检测音频音量
   setTimeout(soundMeterProcess, 100);
@@ -58,7 +60,7 @@ function handleError(error) {
 </script>
 
 <template>
-  <div>
+  <div class="container">
     <h3>
       音量检测示例
     </h3>

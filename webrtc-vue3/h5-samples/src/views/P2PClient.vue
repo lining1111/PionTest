@@ -19,9 +19,9 @@ let state = {
   //是否登录房间
   isLogin: false,
   //本地流
-  localStream: MediaStream,
+  localStream: null,
   //远端流
-  remoteStream: MediaStream,
+  remoteStream: null,
   //禁用音频
   audioMuted: false,
   //禁用视频
@@ -139,61 +139,50 @@ let loginHandler = (userName, roomId) => {
     <h3>
       一对一视频通话示例
     </h3>
-    <div class="login-container" v-if="state.isLogin">
-      <h2>一对一视频通话案例</h2>
-      <P2PLogin loginHandler=loginHandler></P2PLogin>>
-    </div>
-    :
-<!--    <el-table v-if="state.isVideoCall" bordered title="一对一视频通话案例" :data="state.users" >-->
-<!--      <el-table-column prop="name+id" label="ID">-->
-<!--        <div v-if=""></div>-->
-<!--      </el-table-column>-->
-<!--      {-->
-<!--      //迭代所有的用户-->
-<!--      this.state.users.map((user, i) => {-->
-<!--      return (-->
-<!--      <List.Item key={user.id}>-->
-<!--        <div className="list-item">-->
-<!--          {user.name + user.id}-->
-<!--          {user.id !== this.state.userId &&-->
-<!--          <div>-->
-<!--            <el-button type="link" @click="()=> {handleStartCall(user.id, 'video')}">视频</el-button>-->
-<!--            <el-button type="link" @click="()=> {handleStartCall(user.id, 'screen')}">共享桌面</el-button>-->
-<!--          </div>-->
-<!--          }-->
-<!--        </div>-->
-<!--      </List.Item>-->
-<!--      )-->
-<!--      })-->
-<!--      }-->
-<!--    </el-table>-->
-    :
+    <P2PLogin v-if="!state.isLogin" :loginHandler="loginHandler" />
+    <!--    <el-table v-if="state.isVideoCall" bordered title="一对一视频通话案例" :data="state.users" >-->
+    <!--      <el-table-column prop="name+id" label="ID">-->
+    <!--        <div v-if=""></div>-->
+    <!--      </el-table-column>-->
+    <!--      {-->
+    <!--      //迭代所有的用户-->
+    <!--      this.state.users.map((user, i) => {-->
+    <!--      return (-->
+    <!--      <List.Item key={user.id}>-->
+    <!--        <div className="list-item">-->
+    <!--          {user.name + user.id}-->
+    <!--          {user.id !== this.state.userId &&-->
+    <!--          <div>-->
+    <!--            <el-button type="link" @click="()=> {handleStartCall(user.id, 'video')}">视频</el-button>-->
+    <!--            <el-button type="link" @click="()=> {handleStartCall(user.id, 'screen')}">共享桌面</el-button>-->
+    <!--          </div>-->
+    <!--          }-->
+    <!--        </div>-->
+    <!--      </List.Item>-->
+    <!--      )-->
+    <!--      })-->
+    <!--      }-->
+    <!--    </el-table>-->
 
     <div>
-      <div>
-        <!--        渲染远端视频-->
-        <RemoteVideoView v-if="state.remoteStream" stream=state.remoteStream id='remoteview'/>
-        <!--        渲染本地视频-->
-        <LocalVideoView v-if="state.localStream" stream=state.localStream muted=state.videoMuted id='localview'/>
-        }
-      </div>
-      <div class="btn-tools">
-        <!--        打开/关闭视频-->
-        <el-button class="button" ghost size="large" shape="circle"
-                   icon="state.videoMuted ? <VideocamOffIcon /> : <VideoIcon />"
-                   @click=onVideoOnClickHandler>
-        </el-button>
-        <!--        挂断-->
-        <el-button class="button" ghost size="large" shape="circle"
-                   icon="<HangupIcon />"
-                   @click=handleUp>
-        </el-button>
-        <!--        打开/关闭音频-->
-        <el-button ghost size="large" shape="circle"
-                   icon="state.audioMuted ? <MicrophoneOffIcon /> : <MicrophoneIcon />"
-                   @click=onAudioClickHandler>
-        </el-button>
-      </div>
+      <!--        渲染远端视频-->
+      <RemoteVideoView v-if="state.remoteStream" :stream=state.remoteStream id='remoteview'/>
+      <!--        渲染本地视频-->
+      <LocalVideoView v-if="state.localStream" :stream=state.localStream :muted=state.videoMuted id='localview'/>
+    </div>
+    <div class="btn-tools">
+      <!--        打开/关闭视频-->
+      <el-button ghost size="large" round
+                 @click=onVideoOnClickHandler>打开/关闭视频
+      </el-button>
+      <!--        挂断-->
+      <el-button ghost size="large" round
+                 @click=handleUp>挂断
+      </el-button>
+      <!--        打开/关闭音频-->
+      <el-button ghost size="large" round
+                 @click=onAudioClickHandler>打开/关闭音频
+      </el-button>
     </div>
   </div>
 </template>

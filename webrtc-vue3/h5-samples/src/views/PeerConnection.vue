@@ -260,6 +260,9 @@ let hangup = () => {
   peerConnA = null;
   //peerConnB置为空
   peerConnB = null;
+
+  localVideo.value.srcObject = null;
+  remoteVideo.value.srcObject = null;
 }
 
 
@@ -270,10 +273,10 @@ let hangup = () => {
     <h3>
       RTCPeerConnection示例
     </h3>
-    {/* 本地视频 */}
-    <video ref="localVideo" playsInline autoPlay muted></video>
-    {/* 远端视频 */}
-    <video ref="remoteVideo" playsInline autoPlay></video>
+    <p>本地视频</p>
+    <video class="row" ref="localVideo" playsInline autoPlay muted></video>
+    <p>远端视频</p>
+    <video class="row" ref="remoteVideo" playsInline autoPlay></video>
     <div>
       <el-button ref="startButton" @click=start :style='{marginRight:"10px"}'>开始</el-button>
       <el-button ref="callButton" @click=call :style='{marginRight:"10px"}'>呼叫</el-button>

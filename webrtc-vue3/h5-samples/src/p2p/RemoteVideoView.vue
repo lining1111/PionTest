@@ -20,6 +20,7 @@ const style = reactive({
 onMounted(()=>{
   //获取到视频对象
   let video = document.getElementById(props.id);
+  console.log('video',video)
   //指定视频的源为stream
   video.srcObject = props.stream;
   //当获取到MetaData数据后开始播放
@@ -33,7 +34,7 @@ onMounted(()=>{
 <template>
   <div :key=props.id :class='style'>
     {/* 设置ref及id值 视频自动播放 */}
-    <video :ref=props.id :id=props.id
+    <video :ref="props.id" :id="props.id"
            autoPlay playsInline
            :style="{ width: '100%', height: '100%', objectFit: 'contain' }" />
   </div>

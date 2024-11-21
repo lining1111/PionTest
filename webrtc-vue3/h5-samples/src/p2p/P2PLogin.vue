@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="js">
 
 const props = defineProps(["loginHandler"]);
 
@@ -10,7 +10,7 @@ let handleSubmit = (values) => {
 </script>
 
 <template>
-  <el-form ref="values" class="login-form">
+  <el-form ref="values" class="">
     <el-form-item  name="userName">
       <el-input placeholder="请输入用户名"/>
     </el-form-item>

@@ -1,4 +1,4 @@
-<script setup lang="ts" name="Camera">
+<script setup lang="ts">
 //约束条件
 import { ref} from "vue";
 import {ElMessage, ElMessageBox} from "element-plus";
@@ -52,7 +52,7 @@ let handleError = (error: any) => {
       摄像头示例
     </h3>
     <hr>
-    <video type="video" ref="myVideo" autoplay playsinline></video>
+    <video class="video" ref="myVideo" autoplay playsinline></video>
     <el-button @click="openCamera" style="float:left">打开摄像头</el-button>
   </div>
 

@@ -45,9 +45,9 @@ let handleChange = () => {
     <h3>
       视频滤镜示例
     </h3>
-    <video ref='video' v-bind:class="videoClass"  playsInline autoPlay></video>
+    <video ref='video' :class="videoClass"  playsInline autoPlay></video>
     <!--    滤镜属性选择-->
-    <select v-model="selected" style="width: 100px " @change="handleChange">
+    <select v-model="selected" class="row" style="width: 100px" @change="handleChange">
       <option value="none">没有滤镜</option>
       <option value="blur">模糊</option>
       <option value="grayscale">灰度</option>

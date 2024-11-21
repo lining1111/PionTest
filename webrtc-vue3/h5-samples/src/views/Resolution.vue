@@ -45,7 +45,7 @@ let constraints = <MediaTrackConstraints>{}
 let getMedia = (constraints: MediaStreamConstraints) => {
   //判断流对象是否为空
   if (stream) {
-    console.log(stream)
+    console.log('stop stream')
     //迭代并停止所有轨道
     stream.getTracks().forEach(track => {
       track.stop();

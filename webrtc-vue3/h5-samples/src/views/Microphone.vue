@@ -1,4 +1,4 @@
-<script setup lang="ts" name="Microphone">
+<script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
 
@@ -41,7 +41,7 @@ function handleError(err:any) {
     麦克风示例
   </h3>
   <audio ref="audio" controls autoPlay></audio>
-  <p>警告: 如何没有使用头戴式耳机, 声音会反馈到扬声器.</p>
+  <p class="warning">警告: 如何没有使用头戴式耳机, 声音会反馈到扬声器.</p>
 </div>
 </template>
 
